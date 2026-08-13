@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div>
+        <input type="text" id="inp" onkeyup="showFulList()">
+        <button onclick="addTask()">Add</button>
+        <button onclick="reset()">Reset</button>
+        <button onclick="search()">Search</button>
+    </div>
+
+    <div>
+        <ul id="mylist">
+
+        </ul>
+    </div>
+
+
+
+</body>
+
+<script>
+    let myList = document.getElementById('mylist');
+    let myInp = document.getElementById('inp');
+
+    let list = [];
+
+    function addTask() {
+	debugger
+        if (list.filter(x => x === myInp.value).length === 0) {
+            list.push(myInp.value);
+            myInp.value = '';
+        }
+        else {
+            alert('already added');
+        }
+        setingData(list);
+    }
+
+    function setingData(data) {
+        let liList = ``;
+        data.forEach((item) => {
+            liList += `<li>${item}  <button onclick="deleteItem('${item}')" >delete</button>  </li>`
+        })
+        myList.innerHTML = liList;
+    }
+
+    function reset() {
+	debugger
+        list = [];
+        setingData(list);
+        console.log(list);
+    }
+
+    function deleteItem(task) {
+	debugger
+        let selectedIndex = list.indexOf(task);
+        list.splice(selectedIndex, 1);
+        setingData(list)
+    }
+
+    let filteredList = [];
+    function search() {
+        fetch('https://api.restful-api.dev/objects')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP error, status = ' + response.status);
+                }
+                return response.json();        // parse JSON body
+            })
+            .then(data => {
+			myInp.value= data[1].name
+                console.log(data[0]);          // access first element once JSON is parsed
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+    }
+
+
+    function showFulList() {
+	debugger
+        if (myInp.value == '') {
+            setingData(list);
+        }
+    }
+
+
+
+
+    // let list2 = ["Nick" , 'Ali' , 'Asad'];
+
+
+    // let res = list2.filter(x=> x === 'Ali')
+    // console.log(res);
+
+
+    // list2.forEach(item => {
+    //     if(item == 'Ali'){
+    //         console.log('matched')
+    //     }
+    //     else{
+    //         console.log('Un matched')
+    //     }
+    // })
+
+    // let name1 = 'Ali';
+    // let name2 = 'aLi';
+    // console.log(name1.toUpperCase() == name2.toUpperCase());
+
+
+
+
+</script>
+
+</html>
